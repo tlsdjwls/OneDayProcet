@@ -1,4 +1,3 @@
-
 package com.callor.Score.Service;
 
 import java.util.ArrayList;
@@ -8,88 +7,99 @@ import java.util.Scanner;
 import com.callor.Score.model.ScoreVO;
 
 public class ScoreServiceV1 {
-
-	protected Scanner scan;
-	protected List<Integer> scoreList;
-	ScoreVO scoreVO = new ScoreVO();
-   
+	
+	List<ScoreVO> scoreList;
+	Scanner scan;
 	public ScoreServiceV1() {
-
+		scoreList = new ArrayList<ScoreVO>();
 		scan = new Scanner(System.in);
-		scoreList = new ArrayList(scoreList);
-     
-		
-		scoreVO.getKan();
-		scoreVO.getNames();
-		scoreVO.getKor();
-		scoreVO.getEng();
-		scoreVO.getMath();
-		scoreVO.getEin();
-		scoreVO.getTotal();
-		scoreVO.getAvg();
 	}
-
+	
 	public void inputScore() {
-
-		while (true) {
-			System.out.println("=".repeat(50));
-			System.out.println("빛고을 고등학교 성적처리 프로젝트 2021");
-			System.out.println("=".repeat(50));
-			System.out.print("1. 학생별 성적 입력");
-			System.out.print("2. 학생 성적 리스트 출력");
-			System.out.print("QUIT. 업무종료");
-			System.out.println("=".repeat(50));
-			System.out.print("업무선택 >>");
-			String strNums = scan.nextLine();
-			if(strNums.equals("QUIT")) {
-				return;
-			}
-			Integer intNum = scan.nextInt();
-           if(intNum == 1) {
-        	   this.ScoreNames();
-           }else if(intNum == 2){
-        	   this.printScore();
-           }
-           
+		System.out.println("과목별 성적 입력하세요");
+		Integer kor = this.inputScore("국어");
+		if(kor == null) {
+			return;
 		}
+		Integer eng = this.inputScore("영어");
+		if(eng == null) {
+			return;
+		}
+		
+		ScoreVO scoreVO = new ScoreVO();
+		scoreVO.setKor(kor);
+		scoreVO.setEng(eng);
+		scoreList.add(scoreVO);
 	}
-
-	public void ScoreNames() {
-	   
+	
+	public Integer inputScore(String subject) {
 		while(true) {
-        System.out.println("=".repeat(50));
-		System.out.println("학생이름을 입력하세요(입력을 중단하려면 QUIT)");
-		System.out.println("=".repeat(50));
-		System.out.print("이름 >>");
-		Integer Names = scan.nextInt();
-		if(Names.equals("QUIT")) {
-			 break;
+			System.out.print(subject + ">> ");
+			String strScore = scan.nextLine();
+			if(strScore.equals("QUIT")) {
+				return null;
+			}
+			Integer intScore = 0;
+			try {
+				intScore = Integer.valueOf(strScore);
+			} catch (Exception e) {
+				System.out.println("성적은 숫자로만 입력");
+				continue;
+			}
+			if(intScore < 0 || intScore > 100) {
+				System.out.println("0 ~ 100까지");
+				continue;
+			}
+			return intScore;
 		}
+	}
+	
+	
+	public void printList() {
 		
+		System.out.println("성적리스트");
+
+		int totalKor = 0;
+		int totalEng = 0;
+		int totalMath = 0;
+		int totalSci = 0;
+		int totalHist = 0;
+		
+		int allTotal = 0;
+		float allAvg = 0;
+		
+		for(int i = 0 ; i < scoreList.size(); i++) {
+			ScoreVO vo = scoreList.get(i);
+			System.out.print(vo.getKor() + "\t");
+			System.out.print(vo.getEng()+ "\t");
+			System.out.print(vo.getMath()+ "\t");
+			System.out.print(vo.getSci()+ "\t");
+			System.out.print(vo.getHist()+ "\t");
+			
+			System.out.print(vo.getTotal()+ "\t");
+			System.out.print(vo.getAvg()+ "\t");
+			
+			totalKor += vo.getKor();
+			totalEng += vo.getEng();
+			totalMath += vo.getMath();
+			totalSci += vo.getSci();
+			totalHist += vo.getHist();
+			
+			allTotal += vo.getTotal();
+			allAvg += vo.getAvg();
 			
 		}
-			
-		System.out.println("=".repeat(50));
-		System.out.println("학생의 성적을 입력하세요 (성적범위 : 0 ~ 100, 입력을 중단하려면 QUIT");
-		System.out.println("=".repeat(50));
-		System.out.print("국어 >>");
-		System.out.print("영어 >>");
-		System.out.print("수학 >>");
-		System.out.print("과학 >>");
-		System.out.print("국사 >>");
+		System.out.println();
 		
+		System.out.print("총점\t");
+		System.out.print(totalKor + "\t");
+		System.out.print(totalEng + "\t");
+		System.out.print(totalMath + "\t");
+		System.out.print(totalSci + "\t");
+		System.out.print(totalHist + "\t");
 		
-	   }
-	
-	
-    
-		
-	
-	
-	
-	public void printScore() {
-          
+		System.out.print(allTotal + "\t");
+		System.out.print( allAvg/scoreList.size() + "\n" );
 		
 	}
-
 }
